@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { obtenerGastos, obtenerCategorias } from './services/gastos.js';
+import GastoForm from './GastoForm.jsx';
 
 function App() {
   const [gastos, setGastos] = useState([]);
@@ -34,7 +35,14 @@ function App() {
       {error ? (
         <div className="error-message">{error}</div>
       ) : (
-        <section className="debug-section">
+        <section className="main-section">
+          <div className="form-card">
+            <GastoForm
+              categorias={categorias}
+              onGastoCreado={(gasto) => setGastos((prev) => [gasto, ...prev])}
+            />
+          </div>
+
           <div className="debug-card">
             <h2>Gastos</h2>
             <pre>{JSON.stringify(gastos, null, 2)}</pre>
