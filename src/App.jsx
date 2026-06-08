@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { obtenerGastos, obtenerCategorias } from './services/gastos.js';
+import { obtenerGastos, obtenerCategorias, eliminarGasto } from './services/gastos.js';
 import GastoForm from './GastoForm.jsx';
+import GastoList from './GastoList.jsx';
 
 function App() {
   const [gastos, setGastos] = useState([]);
@@ -43,9 +44,20 @@ function App() {
             />
           </div>
 
-          <div className="debug-card">
+          <div className="gastos-card">
             <h2>Gastos</h2>
-            <pre>{JSON.stringify(gastos, null, 2)}</pre>
+            <GastoList
+              gastos={gastos}
+              onEliminar={async (id) => {
+                try {
+                  await eliminarGasto(id);
+                  setGastos((prev) => prev.filter((g) => g.id !== id));
+                } catch (err) {
+                  console.error('Error eliminando gasto', err);
+                  setError('No se pudo eliminar el gasto. Intenta nuevamente.');
+                }
+              }}
+            />
           </div>
 
           <div className="debug-card">
