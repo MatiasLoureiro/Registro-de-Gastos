@@ -64,3 +64,84 @@ pre {
   border-radius: 12px;
   border: 1px solid #fecaca;
 }
+
+/* Gastos */
+.gastos-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  margin-top: 16px;
+}
+
+.gastos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.gasto-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+  display: grid;
+  gap: 8px;
+}
+
+.gasto-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #eef2f7;
+  background: #fbfdff;
+}
+
+.gasto-desc {
+  font-weight: 600;
+}
+
+.gasto-meta span {
+  margin-left: 12px;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.gasto-actions .btn-eliminar {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-eliminar:hover { opacity: 0.95 }
+
+.resumen-card {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e6eef8;
+}
+
+.resumen-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.loading {
+  padding: 12px;
+  color: #374151;
+}
+
+.gastos-controls select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
