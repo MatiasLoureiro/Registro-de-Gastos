@@ -1,5 +1,6 @@
 import express from 'express';
 import { gastos } from '../data/gastos.js';
+import { categorias } from '../data/categorias.js';
 
 const router = express.Router();
 
@@ -25,6 +26,38 @@ router.get('/:id', (req, res) => {
   }
 
   return res.json(gasto);
+});
+
+router.post('/', (req, res) => {
+  const { descripcion, monto, categoria } = req.body;
+
+  if (!descripcion || !descripcion.toString().trim()) {
+    return res.status(400).json({ error: 'Descripcion es obligatoria' });
+  }
+
+  if (monto === undefined || monto === null || monto === '') {
+    return res.status(400).json({ error: 'Monto es obligatorio' });
+  }
+
+  const montoNumber = Number(monto);
+  if (Number.isNaN(montoNumber) || montoNumber <= 0) {
+    return res.status(400).json({ error: 'Monto debe ser mayor a 0' });
+  }
+
+  const categoriaValida = categorias.find(
+    (cat) => cat.toLowerCase() === String(categoria).toLowerCase()
+  );
+
+  const nuevoGasto = {
+    id: Date.now().toString(),
+    descripcion: descripcion.toString().trim(),
+    monto: montoNumber,
+    categoria: categoriaValida || 'Otro',
+    fecha: new Date().toISOString().slice(0, 10)
+  };
+
+  gastos.push(nuevoGasto);
+  return res.status(201).json(nuevoGasto);
 });
 
 export default router;

@@ -5,5 +5,6 @@ export const categorias = [
   'Educación',
   'Entretenimiento',
   'Servicios',
-  'Vivienda'
+  'Vivienda',
+  'Otro'
 ];
