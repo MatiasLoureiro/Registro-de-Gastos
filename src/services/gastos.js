@@ -19,6 +19,11 @@ export async function crearGasto(gasto) {
   return response.data;
 }
 
+export async function editarGasto(id, gasto) {
+  const response = await api.put(`/gastos/${id}`, gasto);
+  return response.data;
+}
+
 export async function eliminarGasto(id) {
   const response = await api.delete(`/gastos/${id}`);
   return response.data;

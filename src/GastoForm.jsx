@@ -22,7 +22,7 @@ export default function GastoForm({ categorias = [], onGastoCreado }) {
       descripcion: descripcion.trim(),
       monto: parseFloat(monto),
       fecha,
-      categoriaId: isNaN(Number(categoria)) ? categoria : Number(categoria)
+      categoria
     };
 
     try {
@@ -79,11 +79,15 @@ export default function GastoForm({ categorias = [], onGastoCreado }) {
         Categoría
         <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
           <option value="">-- Selecciona categoría --</option>
-          {categorias.map((c) => (
-            <option key={c.id ?? c._id ?? c.nombre} value={c.id ?? c._id ?? c.nombre}>
-              {c.nombre ?? c.name ?? c.label ?? c.titulo ?? c.title}
-            </option>
-          ))}
+          {categorias.map((c) => {
+            const valor = typeof c === 'string' ? c : c.id ?? c._id ?? c.nombre ?? c.name ?? c.label;
+            const texto = typeof c === 'string' ? c : c.nombre ?? c.name ?? c.label ?? c.titulo ?? c.title ?? valor;
+            return (
+              <option key={valor} value={valor}>
+                {texto}
+              </option>
+            );
+          })}
         </select>
       </label>
 

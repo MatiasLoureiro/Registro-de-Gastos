@@ -23,7 +23,7 @@ function App() {
         setGastos(gastosData);
         setCategorias(categoriasData);
       } catch (err) {
-        setError('No se pudieron cargar los datos. Revisa la conexión con json-server.');
+        setError('No se pudieron cargar los datos. Revisa la conexión con el backend.');
         console.error(err);
       } finally {
         setLoading(false);
