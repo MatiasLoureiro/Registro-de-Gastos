@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { obtenerGastos, obtenerCategorias, eliminarGasto } from './services/gastos.js';
+import { obtenerGastos, obtenerCategorias, eliminarGasto, editarGasto } from './services/gastos.js';
 import GastoForm from './GastoForm.jsx';
 import GastoList from './GastoList.jsx';
 import Resumen from './Resumen.jsx';
@@ -10,6 +10,7 @@ function App() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [categoriaFiltro, setCategoriaFiltro] = useState('');
+  const [gastoEditando, setGastoEditando] = useState(null);
 
   useEffect(() => {
     async function cargarDatos() {
@@ -33,15 +34,23 @@ function App() {
     cargarDatos();
   }, []);
 
+  const gastosConCategoria = gastos.map((gasto) => {
+    const categoria = categorias.find((cat) => String(cat.id) === String(gasto.categoriaId));
+    return {
+      ...gasto,
+      categoria: categoria ? categoria.nombre : 'Otro'
+    };
+  });
+
   const gastosFiltrados = categoriaFiltro && categoriaFiltro !== ''
-    ? gastos.filter((g) => String(g.categoria) === String(categoriaFiltro))
-    : gastos;
+    ? gastosConCategoria.filter((g) => String(g.categoriaId) === String(categoriaFiltro))
+    : gastosConCategoria;
 
   return (
     <div className="app-container">
       <header>
         <h1>Registro de Gastos</h1>
-        <p>Base del proyecto lista. Conexión inicial a json-server y axios preparada.</p>
+        <p>Gestión de gastos con categorías por ID y nombre de categoría cruzado.</p>
       </header>
 
       {error ? (
@@ -51,7 +60,13 @@ function App() {
           <div className="form-card">
             <GastoForm
               categorias={categorias}
+              gastoEditando={gastoEditando}
               onGastoCreado={(gasto) => setGastos((prev) => [gasto, ...prev])}
+              onGastoActualizado={(gastoActualizado) => {
+                setGastos((prev) => prev.map((g) => (g.id === gastoActualizado.id ? gastoActualizado : g)));
+                setGastoEditando(null);
+              }}
+              onCancelarEdicion={() => setGastoEditando(null)}
             />
           </div>
 
@@ -64,7 +79,7 @@ function App() {
                   <select value={categoriaFiltro} onChange={(e) => setCategoriaFiltro(e.target.value)}>
                     <option value="">Todas</option>
                     {categorias.map((c) => (
-                      <option key={c} value={c}>{c}</option>
+                      <option key={c.id} value={c.id}>{c.nombre}</option>
                     ))}
                   </select>
                 </label>
@@ -86,6 +101,7 @@ function App() {
                       setError('No se pudo eliminar el gasto. Intenta nuevamente.');
                     }
                   }}
+                  onEditar={(gasto) => setGastoEditando(gasto)}
                 />
 
                 <Resumen gastos={gastosFiltrados} />

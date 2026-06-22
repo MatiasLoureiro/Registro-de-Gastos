@@ -1,6 +1,6 @@
 import GastoItem from './GastoItem.jsx';
 
-export default function GastoList({ gastos, onEliminar }) {
+export default function GastoList({ gastos, onEliminar, onEditar }) {
   if (!gastos || gastos.length === 0) {
     return (
       <div className="gasto-list empty">
@@ -13,7 +13,7 @@ export default function GastoList({ gastos, onEliminar }) {
     <ul className="gasto-list">
       {gastos.map((gasto) => (
         <li key={gasto.id}>
-          <GastoItem gasto={gasto} onEliminar={onEliminar} />
+          <GastoItem gasto={gasto} onEliminar={onEliminar} onEditar={onEditar} />
         </li>
       ))}
     </ul>

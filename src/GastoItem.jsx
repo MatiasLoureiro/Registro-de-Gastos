@@ -1,4 +1,4 @@
-export default function GastoItem({ gasto, onEliminar }) {
+export default function GastoItem({ gasto, onEliminar, onEditar }) {
   const { id, descripcion, monto, fecha, categoria } = gasto;
 
   return (
@@ -12,6 +12,9 @@ export default function GastoItem({ gasto, onEliminar }) {
         </div>
       </div>
       <div className="gasto-actions">
+        <button className="btn-editar" onClick={() => onEditar(gasto)}>
+          Editar
+        </button>
         <button className="btn-eliminar" onClick={() => onEliminar(id)}>
           Eliminar
         </button>

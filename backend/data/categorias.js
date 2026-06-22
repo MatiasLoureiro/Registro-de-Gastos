@@ -1,10 +1,10 @@
 export const categorias = [
-  'Alimentos',
-  'Transporte',
-  'Salud',
-  'Educación',
-  'Entretenimiento',
-  'Servicios',
-  'Vivienda',
-  'Otro'
+  { id: '1', nombre: 'Alimentos' },
+  { id: '2', nombre: 'Transporte' },
+  { id: '3', nombre: 'Salud' },
+  { id: '4', nombre: 'Educación' },
+  { id: '5', nombre: 'Entretenimiento' },
+  { id: '6', nombre: 'Servicios' },
+  { id: '7', nombre: 'Vivienda' },
+  { id: '8', nombre: 'Otro' }
 ];

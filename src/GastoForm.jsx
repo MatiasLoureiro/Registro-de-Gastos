@@ -1,41 +1,64 @@
-import { useState } from 'react';
-import { crearGasto } from './services/gastos.js';
+import { useEffect, useState } from 'react';
+import { crearGasto, editarGasto } from './services/gastos.js';
 
-export default function GastoForm({ categorias = [], onGastoCreado }) {
+export default function GastoForm({ categorias = [], gastoEditando, onGastoCreado, onGastoActualizado, onCancelarEdicion }) {
   const [descripcion, setDescripcion] = useState('');
   const [monto, setMonto] = useState('');
   const [fecha, setFecha] = useState('');
-  const [categoria, setCategoria] = useState('');
+  const [categoriaId, setCategoriaId] = useState('');
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (gastoEditando) {
+      setDescripcion(gastoEditando.descripcion || '');
+      setMonto(String(gastoEditando.monto || ''));
+      setFecha(gastoEditando.fecha || '');
+      setCategoriaId(gastoEditando.categoriaId || '');
+      setError(null);
+    } else {
+      setDescripcion('');
+      setMonto('');
+      setFecha('');
+      setCategoriaId('');
+      setError(null);
+    }
+  }, [gastoEditando]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
 
-    if (!descripcion || !monto || !fecha || !categoria) {
+    if (!descripcion || !monto || !fecha || !categoriaId) {
       setError('Todos los campos son obligatorios.');
       return;
     }
 
-    const nuevo = {
+    const gastoPayload = {
       descripcion: descripcion.trim(),
       monto: parseFloat(monto),
       fecha,
-      categoria
+      categoriaId
     };
 
     try {
       setSubmitting(true);
-      const creado = await crearGasto(nuevo);
+
+      if (gastoEditando && gastoEditando.id) {
+        const actualizado = await editarGasto(gastoEditando.id, gastoPayload);
+        if (onGastoActualizado) onGastoActualizado(actualizado);
+      } else {
+        const creado = await crearGasto(gastoPayload);
+        if (onGastoCreado) onGastoCreado(creado);
+      }
+
       setDescripcion('');
       setMonto('');
       setFecha('');
-      setCategoria('');
-      if (onGastoCreado) onGastoCreado(creado);
+      setCategoriaId('');
     } catch (err) {
       console.error(err);
-      setError('No se pudo crear el gasto. Revisa la conexión.');
+      setError('No se pudo guardar el gasto. Revisa la conexión.');
     } finally {
       setSubmitting(false);
     }
@@ -43,7 +66,7 @@ export default function GastoForm({ categorias = [], onGastoCreado }) {
 
   return (
     <form className="gasto-form" onSubmit={handleSubmit}>
-      <h2>Nuevo Gasto</h2>
+      <h2>{gastoEditando ? 'Editar Gasto' : 'Nuevo Gasto'}</h2>
 
       <label>
         Descripción
@@ -77,25 +100,28 @@ export default function GastoForm({ categorias = [], onGastoCreado }) {
 
       <label>
         Categoría
-        <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+        <select value={categoriaId} onChange={(e) => setCategoriaId(e.target.value)}>
           <option value="">-- Selecciona categoría --</option>
-          {categorias.map((c) => {
-            const valor = typeof c === 'string' ? c : c.id ?? c._id ?? c.nombre ?? c.name ?? c.label;
-            const texto = typeof c === 'string' ? c : c.nombre ?? c.name ?? c.label ?? c.titulo ?? c.title ?? valor;
-            return (
-              <option key={valor} value={valor}>
-                {texto}
-              </option>
-            );
-          })}
+          {categorias.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.nombre}
+            </option>
+          ))}
         </select>
       </label>
 
       {error && <div className="error-message">{error}</div>}
 
-      <button type="submit" disabled={submitting}>
-        {submitting ? 'Guardando...' : 'Agregar Gasto'}
-      </button>
+      <div className="form-actions">
+        <button type="submit" disabled={submitting}>
+          {submitting ? 'Guardando...' : gastoEditando ? 'Actualizar Gasto' : 'Agregar Gasto'}
+        </button>
+        {gastoEditando && (
+          <button type="button" className="btn-secondary" onClick={onCancelarEdicion}>
+            Cancelar
+          </button>
+        )}
+      </div>
     </form>
   );
 }
